@@ -9,7 +9,8 @@ import {
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { ResizeMode, Video } from "expo-av";
@@ -30,13 +31,19 @@ const Create = () => {
   });
 
   const openPicker = async (selectType) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:
+    // const result = await ImagePicker.launchImageLibraryAsync({
+    //   mediaTypes:
+    //     selectType === "image"
+    //       ? ImagePicker.MediaTypeOptions.Images
+    //       : ImagePicker.MediaTypeOptions.Videos,
+    //   aspect: [4, 3],
+    //   quality: 1,
+    // });
+    const result = await DocumentPicker.getDocumentAsync({
+      type:
         selectType === "image"
-          ? ImagePicker.MediaTypeOptions.Images
-          : ImagePicker.MediaTypeOptions.Videos,
-      aspect: [4, 3],
-      quality: 1,
+          ? ["image/png", "image/jpg", "image/jpeg"]
+          : ["video/mp4", "video/gif"],
     });
 
     if (!result.canceled) {
@@ -46,27 +53,26 @@ const Create = () => {
       if (selectType === "video") {
         setForm({ ...form, video: result.assets[0] });
       }
-    } else {
-      setTimeout(() => {
-        Alert.alert("Document Picked", JSON.stringify(result, null, 2));
-      }, 100);
     }
+    // else {
+    //   setTimeout(() => {
+    //     Alert.alert("Document Picked", JSON.stringify(result, null, 2));
+    //   }, 100);
+    // }
   };
 
   const submit = async () => {
-    if (
-      form.prompt === "" ||
-      form.title === "" ||
-      form.thumbnail === "" ||
-      form.video === ""
-    ) {
+    if (!form.prompt || !form.title || !form.thumbnail || !form.video) {
       return Alert.alert("Please fill in all feilds");
     }
 
     setUploading(true);
 
     try {
-      await createVideo({ ...form, userId: user.$id });
+      await createVideo({
+        ...form,
+        userId: user.$id,
+      });
 
       Alert.alert("Success", "Post Uploaded Successfully");
       router.push("/home");

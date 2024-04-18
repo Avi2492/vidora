@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { icons } from "../constants";
 import { ResizeMode, Video } from "expo-av";
+import { RiHeartFill, RiHeartLine } from "@remixicon/react";
 
 const VideoCard = ({
   video: {
@@ -12,6 +13,9 @@ const VideoCard = ({
   },
 }) => {
   const [play, setPlay] = useState(false);
+  const [like, setLike] = useState(false);
+  const [save, setSave] = useState(false);
+
   return (
     <View className="flex-col items-center px-4 mb-14">
       <View className="flex-row gap-3 items-start">
@@ -71,6 +75,13 @@ const VideoCard = ({
             className="w-12 absolute h-12 rounded-xl mt-3"
             resizeMode="cover"
           />
+          {/* '<View
+            onClick={saveShow}
+            className="absolute top-4 left-2 text-gray-300"
+          >
+            {!like ? <RiHeartLine /> : <RiHeartFill />}
+            
+          </View>' */}
         </TouchableOpacity>
       )}
     </View>
